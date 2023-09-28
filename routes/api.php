@@ -21,3 +21,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+
+Route::get('/login', function () {
+    return response()->json(['message' => 'Unauthorised'], 401);
+})->name('login');
+
+
+Route::middleware('auth:api')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/users', [AuthController::class, 'index']);
+    Route::get('/users/{id}', [AuthController::class, 'show']);
+});

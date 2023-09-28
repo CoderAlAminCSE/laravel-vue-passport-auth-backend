@@ -18,5 +18,5 @@ function send_error($message, $messages = [], $code = 404)
     ];
 
     !empty($messages) ? $response['errors'] = $messages : null;
-    return response()->json([$response, $code]);
+    return response()->json([$response], $code);
 }

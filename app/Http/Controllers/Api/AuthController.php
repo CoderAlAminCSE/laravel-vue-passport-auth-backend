@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+
+    public function index()
+    {
+        $user = User::all();
+        return send_response('success', $user);
+    }
     public function login(Request $request)
     {
         $validator = Validator::make(
@@ -27,13 +33,13 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if(Auth::attempt($credentials)){
+        if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $data['name'] = $user->name;
             $data['access_token'] = $user->createToken('accessToken')->accessToken;
 
             return send_response('You are succesfully logged in', $data);
-        }else{
+        } else {
             return send_error('Unauthorised', '', 401);
         }
     }
@@ -68,6 +74,25 @@ class AuthController extends Controller
             return send_response('User registration success', $data);
         } catch (\Throwable $th) {
             return send_error($th->getMessage(), $th->getCode());
+        }
+    }
+
+
+    public function logout(Request $request)
+    {
+        auth()->user()->token()->revoke();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+
+    public function show($id)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            return send_response('Success', $user);
+        } else {
+            return send_error('Data not found!');
         }
     }
 }
